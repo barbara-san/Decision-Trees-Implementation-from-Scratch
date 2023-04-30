@@ -2,6 +2,13 @@
 
 ## Projeto 3 - Árvores de Decisão
 
+### Índice
+  
+  [Vista Geral](#vista-geral)  
+  [Instruções de Compilação e Desenvolvimento da Árvore](#instruções-de-compilação-e-desenvolvimento-da-árvore)  
+  [Instruções para Adição de Novos Dados para Previsão](#instruções-para-adição-de-novos-dados-para-previsão)
+
+
 ### Vista Geral
 
 Este projeto foi desenvolvido no âmbito da Unidade Curricular *Inteligência Artificial*, durante o ano letivo 2022/2023, na Faculdade de Ciências da Universidade do Porto, pela aluna Bárbara Santos.
@@ -10,7 +17,7 @@ O seu principal objetivo é a implementação completa de um desenvolvedor de um
 
 !!!!!!!!!!!!!!!!!O programa foi compilado tanto em *Ubuntu 20.04 LTS* com *javac 11.0.17* como *macOS Monterey version 12.2.1* com *javac 18.0.2.1*.
 
-### Instruções de Compilação e Execução
+### Instruções de Compilação e Desenvolvimento da Árvore
 
 Para poder executar cada problema é primeiro necessário compilar todos os ficheiros java. Para tal, utilize a seguinte instrução:
 
@@ -23,6 +30,8 @@ Após a compilação de todos os ficheiros, é possível, finalmente, executá-l
 - `java Main Iris`
 
 Após a escolha do dataset, é esperado que o programa desenvolva a devida decision tree.
+
+### Instruções para Adição de Novos Dados para Previsão
 
 !!!!!!!!!!!!!!!!!Para poder aplicá-la a novos dados, é necessário.
 
