@@ -17,12 +17,12 @@ Para poder executar cada problema é primeiro necessário compilar todos os fich
 `javac *.java`
 
 Após a compilação de todos os ficheiros, é possível, finalmente, executá-los.  
-!!!!!!!!!Para leitura e desenvolvimento da árvore de decisão para cada um dos datasets disponibilizados, utilizar o seguinte formato de entrada `java Main type`, onde "type" deve ser substituido pelo nome do dataset desejado:  
+!!!!!!!!!!!!!!!!!Para leitura e desenvolvimento da árvore de decisão para cada um dos datasets disponibilizados, utilizar o seguinte formato de entrada `java Main type`, onde "type" deve ser substituido pelo nome do dataset desejado:  
 - `java Main Restaurant`
 - `java Main Weather`
 - `java Main Iris`
 
 Após a escolha do dataset, é esperado que o programa desenvolva a devida decision tree.
 
-!!!!!!Para poder aplicá-la a novos dados, é necessário.
+!!!!!!!!!!!!!!!!!Para poder aplicá-la a novos dados, é necessário.
 
