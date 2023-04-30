@@ -19,12 +19,13 @@ public class DataSet {
         }  
     }
 
-    private List<String> atributes = new ArrayList<>();
-    private List<List<String>> csv = new ArrayList<>();
-    private List<List<Object>> all_cols = new ArrayList<>();
-    private LinkedHashMap<String, List<String>> options = new LinkedHashMap<String, List<String>>();
-    private List<Boolean> isNum = new ArrayList<>();
+    private List<String> atributes = new ArrayList<>(); //list of the different atributes
+    private List<List<String>> csv = new ArrayList<>(); //csv as given
+    private List<List<Object>> all_cols = new ArrayList<>(); //list of all the columns
+    private List<List<String>> options = new ArrayList<List<String>>(); //map with the different options by atribute
+    private List<Boolean> isNum = new ArrayList<>(); //list that says for each col if its numeric or not
     public int size;
+    public int colnum;
 
     DataSet(String fileName){
         File file = new File(fileName);
@@ -43,18 +44,19 @@ public class DataSet {
                 size++;
                 if (first_line) {
                     atributes = Arrays.asList(values);
+                    colnum = csv.get(0).size();
                     for (String value: csv.get(0)) {
                         List<String> option = new ArrayList<>();
                         List<Object> attribute = new ArrayList<>();
                         //attribute.add(value);
                         all_cols.add(attribute);
-                        options.put(value, option);
+                        options.add(option);
                     }
                     first_line = false;
                 }
                 else {
                     int cur_row = 0;
-                    for (Map.Entry<String, List<String>> cur_atr : options.entrySet()) {
+                    for (List<String> cur_atr : options) {
                         String value = csv.get(cur_line).get(cur_row);
                         if (isNumeric(value)) {
                             double value2 = Double.parseDouble(value);
@@ -62,28 +64,28 @@ public class DataSet {
                         }
                         else all_cols.get(cur_row).add(value);
 
-                        if (!cur_atr.getValue().contains(value)) 
-                            cur_atr.getValue().add(value);
-                        
+                        if (!cur_atr.contains(value)) 
+                            cur_atr.add(value);
                         cur_row++;
                     }
                 }
-
                 cur_line++;
             }
-            
             sc.close();
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        size--;
-
         for (String value: csv.get(1)) {
             if (isNumeric(value)) isNum.add(true);
             else isNum.add(false);
         }
+        isNum.remove(0);
+        all_cols.remove(0);
+        options.remove(0);
+        size--;
+        colnum--;
     }
 
     public List<List<String>> getCSV() {
@@ -96,17 +98,18 @@ public class DataSet {
         return all_cols.get(i);
     }
     public List<Object> getPredCol() {
-        return all_cols.get(size-1);
+        return all_cols.get(colnum-1);
     }
     public List<String> getPredOptions() {
-        return options.get(atributes.get(size-1));
+        return options.get(colnum-1);
     }
     public List<String> getOptions(int i) {
-        return options.get(atributes.get(i));
+        return options.get(i);
     }
     public List<Boolean> getNum() {
         return isNum;
     }
+
     public int getPosNum() {
         int count = 0;
         for (int i = 0; i < size; i++) {
@@ -129,10 +132,9 @@ public class DataSet {
 
     public void printOptions(){
         System.out.println("PRINT OPTIONS");
-        for (Map.Entry<String, List<String>> aa : options.entrySet()){
-            System.out.print(aa.getKey() + ": ");
-            for (int i = 0; i < aa.getValue().size(); i++) {
-                System.out.print(aa.getValue().get(i) + ' ');
+        for (List<String> aa : options){
+            for (int i = 0; i < aa.size(); i++) {
+                System.out.print(aa.get(i) + ' ');
             }
             System.out.println("");
         }
