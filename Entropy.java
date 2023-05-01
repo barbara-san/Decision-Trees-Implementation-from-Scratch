@@ -11,7 +11,7 @@ public class Entropy {
         return l;
     }
 
-    private static double[] countPos(DataSet ds, int ind, String option) {
+    private static double[] countPos(DataSet ds, int ind, Object option) {
         double count[] = new double[3];
         //System.out.println(option);
         for (int i = 0; i < ds.size; i++) {
