@@ -1,14 +1,6 @@
 import java.util.*;
 
 public class Intervals {
-
-    static Double asDouble(Object o) {
-        Double val = null;
-        if (o instanceof Number) {
-            val = ((Number) o).doubleValue();
-        }
-        return val;
-    }
     
     public static double[] getIntervals(List<Object> list, int num) {
 
@@ -17,7 +9,7 @@ public class Intervals {
         int[] freq = new int[num];
 
         for (int i = 0; i < list.size(); i++) {
-            data[i] = asDouble(list.get(i));
+            data[i] = Utility.toDouble(list.get(i));
         }
 
         Arrays.sort(data);
@@ -55,11 +47,5 @@ public class Intervals {
         }
         return index;
     }
-    
-/*     public void printfreq() {
-        for (int i = 0; i < num; i++) {
-            System.out.printf("[%.2f, %.2f[: %d%n", intervalBounds[i], intervalBounds[i+1], freq[i]);
-        }
-    } */
-}
 
+}

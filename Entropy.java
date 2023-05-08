@@ -1,52 +1,64 @@
+import java.util.*;
+
 public class Entropy {
-    private static double log2(double n){
-        double m;
 
-        if (n == 1) m = 0.99;
-        if (n == -1) m = -0.99;
-        else if (n==0) m = 0.01;
-        else m = n;
-
-        double l = (Math.log(m) / Math.log(2));
-        return l;
-    }
-
-    private static double[] countPos(DataSet ds, int ind, Object option) {
-        double count[] = new double[3];
-        //System.out.println(option);
-        for (int i = 0; i < ds.size; i++) {
-            if (ds.getCol(ind).get(i).equals(option)) {
-                count[2]++;
-                if (ds.getPredCol().get(i).equals(ds.getPredOptions().get(0))) count[0]++;
-                else count[1]++;
+    private static double probcalc(List<Object> list, Object target_i) {
+        double count = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(target_i)) {
+                count++;
             }
         }
+        count /= list.size();
         return count;
-    }
-    
-    private static double Bcalc(double q) {
-        double bvalue = -(q * log2(q) + ((1-q) * log2(1-q)));
-        return bvalue;
     }
 
-    private static double remaindercalc(DataSet ds, int ind) {
+    private static double probcalc(List<Object> AttributeCol, Object attribute, List<Object> list, Object target_i) {
         double count = 0;
-        //System.out.println(ds.getOptions(ind).size());
-        for (int index = 0; index < ds.getOptions(ind).size(); index++) {
-            double pos[] = countPos(ds,ind,ds.getOptions(ind).get(index));
-            double fraction = (pos[2])/(ds.size);
-            double b = Bcalc(pos[0]/(pos[2]));
-            count += fraction*b;
+        double total = 0;
+        for (int j = 0; j < AttributeCol.size(); j++) {
+            if (AttributeCol.get(j).equals(attribute)) {
+                total++;
+                if (list.get(j).equals(target_i)) count++;
+            }
         }
+        count /= total;
         return count;
+    }
+
+    private static double Hcalc(List<Object> target, List<Object> options) {
+        double result = 0;
+        for (int i = 0; i < options.size(); i++) {
+            double p = probcalc(target, options.get(i));
+            if (p == 0) continue;
+            else result -= (p * Utility.log2(p));
+        }
+        return result;
+    }
+
+    private static double Hcalc(List<Object> AttributeCol, Object attribute, List<Object> target, List<Object> options) {
+        double result = 0;
+        for (int i = 0; i < options.size(); i++) {
+            double p = probcalc(AttributeCol, attribute, target, options.get(i));
+            if (p == 0) continue;
+            else result -= (p * Utility.log2(p));
+        }
+        return result;
+    }
+
+    private static double remainder(DataSet ds, int ind) {
+        double result = 0;
+        for (int i = 0; i < ds.getOptions(ind).size(); i++) {
+            double p = probcalc(ds.getCol(ind), ds.getOptions(ind).get(i));
+            double h = Hcalc(ds.getCol(ind), ds.getOptions(ind).get(i), ds.getPredCol(), ds.getPredOptions());
+            result += p * h;
+        }
+        return result;
     }
 
     private static double gain(DataSet ds, int ind) {
-        double s = ds.size;
-        double prob = ds.getPosNum()/s;
-        double g = Bcalc(prob)-remaindercalc(ds,ind);
-        double scale = Math.pow(10, 3);
-        g = Math.round(g*scale)/scale;
+        double g = Hcalc(ds.getPredCol(), ds.getPredOptions())-remainder(ds,ind);
+        g = Math.round(g*(double)Math.pow(10, 5))/(double)Math.pow(10, 5);
         return g;
     }
 
