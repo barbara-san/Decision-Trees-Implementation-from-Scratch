@@ -7,6 +7,7 @@ public class DataSet {
     private List<List<String>> csv = new ArrayList<>(); //csv as given
     private List<List<Object>> all_cols = new ArrayList<>(); //list of all the columns
     private List<Object> pred_col = new ArrayList<>(); //pred column
+    private List<String> attributes = new ArrayList<>(); //list of all attributes
     private List<List<Object>> options = new ArrayList<List<Object>>(); //map with the different options by atribute
     private List<Boolean> isNum = new ArrayList<>(); //list that says for each col if its numeric or not
     public int size;
@@ -74,11 +75,14 @@ public class DataSet {
         options.remove(0);
         size--;
         colnum-= 2;
+        attributes = new ArrayList<>(csv.get(0));
+        attributes.remove(0);
     }
 
     DataSet(DataSet ds, int i, Object opt){
         pred_col = new ArrayList<>(ds.getPredCol());
-        isNum =  new ArrayList<>(ds.getNum());
+        isNum = new ArrayList<>(ds.getNum());
+        attributes = new ArrayList<>(ds.getAttributes());
 
         for (List<String> sublist : ds.getCSV()) {
             csv.add(new ArrayList<>(sublist));
@@ -90,8 +94,7 @@ public class DataSet {
             options.add(new ArrayList<>(sublist));
         }
         
-        options.remove(i);
-        isNum.remove(i);
+
         for (int j = 1; j < csv.size(); j++) {
             if (!csv.get(j).get(i+1).equals(opt)) {
                 csv.remove(j);
@@ -101,64 +104,42 @@ public class DataSet {
                 }
                 j--;
             }
-        }
-
-        for (int m = 1; m < csv.size(); m++) {
-            csv.get(m).remove(i+1);
-        }
-        all_cols.remove(i);
-        csv.get(0).remove(i+1);
-        size = csv.size()-1;
-        colnum = all_cols.size();
-    }
-
-    /*
-    DataSet(DataSet ds, double percentage){
-
-        boolean[] ind = new boolean[ds.size];
-
-        for (int i = 0; i < ds.size; i++) {
-            ind[i] = true;
-        }
-        
-        Utility.shuffle(ind, percentage);
-
-        pred_col = new ArrayList<>(ds.getPredCol());
-        isNum =  new ArrayList<>(ds.getNum());
-
-        for (List<String> sublist : ds.getCSV()) {
-            csv.add(new ArrayList<>(sublist));
-        }
-        for (List<Object> sublist : ds.getallCols()) {
-            all_cols.add(new ArrayList<>(sublist));
-        }
-        for (List<Object> sublist : ds.getAllOptions()) {
-            options.add(new ArrayList<>(sublist));
-        }
-        
-        options.remove(i);
-        isNum.remove(i);
-        for (int j = 1; j < csv.size(); j++) {
-            if (!csv.get(j).get(i+1).equals(opt)) {
+            /*else if (isNum.get(i) && !(ds.getCol(i).get(j-1).toString()).equals(opt)) {
                 csv.remove(j);
                 pred_col.remove(j-1);
                 for (int k = 0; k < all_cols.size(); k++) {
                     all_cols.get(k).remove(j-1);
                 }
                 j--;
-            }
+            }*/
+            //System.out.println(ds.getCol(i).get(j-1).toString() + ' ' + opt);
         }
 
         for (int m = 1; m < csv.size(); m++) {
             csv.get(m).remove(i+1);
         }
+        options.remove(i);
+        isNum.remove(i);
+        attributes.remove(i);
         all_cols.remove(i);
         csv.get(0).remove(i+1);
         size = csv.size()-1;
         colnum = all_cols.size();
     }
 
-    */
+    public String getMostCommonClass(DataSet ds) {
+        HashMap<Object, Integer> count = new HashMap<Object, Integer>();
+        for (Object element : pred_col) {
+            if (!count.containsKey(element)) count.put(element, 1);
+            else count.put(element, count.get(element)+1);
+        }
+        int max = 0;
+        String value = "";
+        for (Map.Entry<Object, Integer> set : count.entrySet()) {
+            if (set.getValue() > max) value = set.getKey().toString();
+        }
+        return value;
+    }
 
     
     public List<List<String>> getCSV() {
@@ -175,6 +156,14 @@ public class DataSet {
 
     public List<Object> getPredCol() {
         return pred_col;
+    }
+
+    public String getAttribute(int i) {
+        return attributes.get(i);
+    }
+
+    public List<String> getAttributes() {
+        return attributes;
     }
 
     public List<Object> getPredOptions() {
@@ -223,16 +212,21 @@ public class DataSet {
                 double[] inti = Intervals.getIntervals(getCol(j), numIntervals);
                 List<Object> formatted = new ArrayList<>();
                 List<Object> formattedOpt = new ArrayList<>();
+                
+
                 for (int k = 0; k < all_cols.get(j).size(); k++) {
+                    List<String> line = new ArrayList<>(csv.get(k+1));
                     for (int i = 0; i < numIntervals; i++) {
                         if (Utility.toDouble(all_cols.get(j).get(k)) >= inti[i] && Utility.toDouble(all_cols.get(j).get(k)) < inti[i+1]) {
-                            formatted.add("["+ inti[i] + ',' + inti[i+1] + "[");
-                            if (!formattedOpt.contains("["+ inti[i] + ',' + inti[i+1] + "[")) {
-                                Object o = "["+ inti[i] + ',' + inti[i+1] + "[";
+                            Object o = "["+ inti[i] + ',' + inti[i+1] + "[";
+                            formatted.add(o);
+                            line.set(j+1, o.toString());
+                            if (!formattedOpt.contains(o)) {
                                 formattedOpt.add(o);
                             }
                         }
                     }
+                    csv.set(k+1, line);
                 }
                 options.set(j, formattedOpt);
                 all_cols.set(j, formatted);

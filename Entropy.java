@@ -22,6 +22,7 @@ public class Entropy {
                 if (list.get(j).equals(target_i)) count++;
             }
         }
+        if (total == 0) return 0;
         count /= total;
         return count;
     }
@@ -57,12 +58,12 @@ public class Entropy {
     }
 
     private static double gain(DataSet ds, int ind) {
-        double g = Hcalc(ds.getPredCol(), ds.getPredOptions())-remainder(ds,ind);
-        g = Math.round(g*(double)Math.pow(10, 5))/(double)Math.pow(10, 5);
+        double g = Hcalc(ds.getPredCol(), ds.getPredOptions()) - remainder(ds,ind);
+        //g = Math.round(g*(double)Math.pow(10, 7))/(double)Math.pow(10, 7);
         return g;
     }
 
-    public static double entcalc(DataSet ds, int ind) {
+    public static double getGain(DataSet ds, int ind) {
         return gain(ds, ind);
     }
 }
