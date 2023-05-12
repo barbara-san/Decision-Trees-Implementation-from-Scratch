@@ -212,8 +212,6 @@ public class DataSet {
                 double[] inti = Intervals.getIntervals(getCol(j), numIntervals);
                 List<Object> formatted = new ArrayList<>();
                 List<Object> formattedOpt = new ArrayList<>();
-                
-
                 for (int k = 0; k < all_cols.get(j).size(); k++) {
                     List<String> line = new ArrayList<>(csv.get(k+1));
                     for (int i = 0; i < numIntervals; i++) {
