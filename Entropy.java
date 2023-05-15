@@ -47,23 +47,23 @@ public class Entropy {
         return result;
     }
 
-    private static double remainder(DataSet ds, int ind) {
+    private static double remainder(Dataset ds, int ind) {
         double result = 0;
         for (int i = 0; i < ds.getOptions(ind).size(); i++) {
-            double p = probcalc(ds.getCol(ind), ds.getOptions(ind).get(i));
-            double h = Hcalc(ds.getCol(ind), ds.getOptions(ind).get(i), ds.getPredCol(), ds.getPredOptions());
+            double p = probcalc(ds.col(ind), ds.getOptions(ind).get(i));
+            double h = Hcalc(ds.col(ind), ds.getOptions(ind).get(i), ds.target(), ds.get_target_options());
             result += p * h;
         }
         return result;
     }
 
-    private static double gain(DataSet ds, int ind) {
-        double g = Hcalc(ds.getPredCol(), ds.getPredOptions()) - remainder(ds,ind);
+    private static double gain(Dataset ds, int ind) {
+        double g = Hcalc(ds.target(), ds.get_target_options()) - remainder(ds,ind);
         //g = Math.round(g*(double)Math.pow(10, 7))/(double)Math.pow(10, 7);
         return g;
     }
 
-    public static double getGain(DataSet ds, int ind) {
+    public static double getGain(Dataset ds, int ind) {
         return gain(ds, ind);
     }
 }
