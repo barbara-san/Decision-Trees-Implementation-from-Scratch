@@ -5,10 +5,10 @@ public class DecisionTree {
     Node root;
 
     DecisionTree(Dataset ds){
-        root = new Node(ds, true, "", "", 0);
+        root = new Node(ds, true, null, null, 0);
     }
 
-    Node fit(Node r, Dataset ds) {
+    public Node fit(Node r, Dataset ds) {
         if (r.isFinal()) return r;
         else {
             double avalue = -1;
@@ -40,15 +40,15 @@ public class DecisionTree {
 
     }
 
-    String predict(List<Object> line) {
+    private String predict(List<String> line) {
         Node r = root;
         while (!r.isFinal()) {
             for (Node r2 : r.children()) {
-                int i = r.ds().getAttributes().indexOf(r2.getSplitConditionAttribute());
-                if (r2.attributeValue().equals(line.get(i).toString())) {
+                int i = r.ds().getAttributes().indexOf(r2.splitConditionAttribute());
+                if (r2.attributeValue().equals(line.get(i+1))) {
                     if (r.isFinal()) return r.classification();
                     r = r2;
-                    line.remove(i);
+                    line.remove(i+1);
                     break;
                 }
             }
@@ -56,15 +56,15 @@ public class DecisionTree {
         return r.classification();
     }
 
-/*     List<String> predict(Dataset new_lines) {
+    public List<String> predict(Dataset new_lines) {
         List<String> prediction = new ArrayList<>();
-        for (int i = 0; i < new_lines.numberLines(); i++) {
-            prediction.add(predict(new_lines.getCSV().get(i)));
+        for (int i = 1; i < new_lines.numberLines() + 1; i++) {
+            prediction.add(predict(new_lines.csv().get(i)));
         }
         return prediction;
-    } */
+    }
 
-    void printDT() {
+    public void printDT() {
         Stack<Node> s = new Stack<Node>();
         s.add(root);
         boolean isroot = true;
@@ -75,7 +75,7 @@ public class DecisionTree {
                 }
             if (isroot) {isroot = false; continue;}
             String space = new String(new char[r.level()-1]).replace("\0", "\t");
-            System.out.println(space + r.getSplitConditionAttribute() + ": " + r.attributeValue());
+            System.out.println(space + r.splitConditionAttribute() + ": " + r.attributeValue());
             if (r.isFinal()) System.out.println(space + "class = " + r.classification() + "; count = " + r.count());
             System.out.println(' ');
             

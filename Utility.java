@@ -3,20 +3,13 @@ import java.util.*;
 public class Utility {
     
     static Double toDouble(Object o) {
-        Double val = null;
-        if (o instanceof Number) {
-            val = ((Number) o).doubleValue();
-        }
-        return val;
+        if (o instanceof Number) {return ((Number) o).doubleValue();}
+        return null;
     }
 
     static double log2(double n){
-        double m;
-        if (n==0) m = 0.00000000000000000000000000000000001;
-        else m = n;
-
-        double l = (Math.log(m) / Math.log(2));
-        return l;
+        if (n==0) n = 0.00000000000000000000000000000000001;
+        return (Math.log(n) / Math.log(2));
     }
 
     static boolean isNumeric(String str) { 

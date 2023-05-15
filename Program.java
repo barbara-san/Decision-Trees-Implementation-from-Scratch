@@ -10,7 +10,10 @@ public class Program {
         dt.fit(dt.root, ds);
         dt.printDT();
 
+        String str;
 
+
+    
 
 
         in.close();

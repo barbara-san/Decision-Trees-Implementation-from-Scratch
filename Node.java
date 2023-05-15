@@ -2,12 +2,14 @@ import java.util.*;
 
 public class Node {
     private int level;
-    private Dataset ds;
-    private String splitCondition;
-    private String classification;
-    private String attributeValue;
     private int count = -1;
     private boolean isFinal = true;
+
+    private Dataset ds;
+    private String classification;
+    private String splitConditionAttribute;
+    private String attributeValue;
+
     private List<Node> children  = new ArrayList<>();
 
 
@@ -15,7 +17,7 @@ public class Node {
     Node(Dataset dataset, boolean root, String sC, String aV, int l) {
         ds = dataset;
         if (!root) {
-            splitCondition = sC;
+            splitConditionAttribute = sC;
             Object test = ds.target().get(0);
             for (Object o : ds.target()) {
                 if (!test.equals(o)) {
@@ -35,11 +37,11 @@ public class Node {
 
     // constructor for new node created by Plurarity Value
     Node(Dataset dataset, String sC, String aV, String most_common, int l) {
-        isFinal = true;
-        splitCondition = sC;
         count = 0;
-        classification = most_common;
+        isFinal = true;
+        splitConditionAttribute = sC;
         attributeValue = aV;
+        classification = most_common;
         level = l;
     }
 
@@ -49,7 +51,6 @@ public class Node {
     }
 
     //getters
-
     List<Node> children() {
         return children;
     }
@@ -62,8 +63,8 @@ public class Node {
         return classification;
     }
 
-    String getSplitConditionAttribute() {
-        return splitCondition;
+    String splitConditionAttribute() {
+        return splitConditionAttribute;
     }
 
     int count() {

@@ -4,14 +4,15 @@ import java.util.*;
 
 public class Dataset {
 
-    private List<List<String>> csv = new ArrayList<>(); //csv as given
+    private List<List<String>> csv = new ArrayList<>(); //csv as given, line by line, including index and attribute names
     private List<List<Object>> list_of_all_cols = new ArrayList<>(); //list of all the columns
-    private List<Object> target = new ArrayList<>(); //pred column
-    private List<String> attributes = new ArrayList<>(); //list of all attributes
-    private List<List<Object>> options_per_attribute = new ArrayList<List<Object>>(); //map with the different options_per_attribute by atribute
-    private List<Boolean> isNumerical = new ArrayList<>(); //list that says for each col if its numeric or not
-    private int numberLines;
-    private int numberCols;
+    private List<Object> target = new ArrayList<>(); // target
+    private List<String> attributes = new ArrayList<>(); // list of all attributes
+    private List<List<Object>> options_per_attribute = new ArrayList<List<Object>>(); // list with the different options by atribute
+    private List<Boolean> isNumerical = new ArrayList<>(); // list that says for each collumn if its numeric or not
+    private List<double[]> all_intervals = new ArrayList<>(); // list with the lists of collumns
+    private int numberLines; 
+    private int numberCols; 
 
     // constructor for brand new dataset
     Dataset(String fileName, boolean hasTarget){
@@ -67,19 +68,18 @@ public class Dataset {
             else isNumerical.add(false);
         }
 
-        if (hasTarget) target = list_of_all_cols.get(numberCols-1);
-        list_of_all_cols.remove(numberCols-1);
-        list_of_all_cols.remove(0);
+        if (hasTarget) {target = list_of_all_cols.get(numberCols-1);
+                        list_of_all_cols.remove(numberCols-1);
+                        isNumerical.remove(numberCols-1);
+                        numberCols-= 2;}
+        else numberCols--;
 
-        isNumerical.remove(numberCols-1);
+        list_of_all_cols.remove(0);      
         isNumerical.remove(0);
-
+        options_per_attribute.remove(0);
         attributes = new ArrayList<>(csv.get(0));
         attributes.remove(0);
-        options_per_attribute.remove(0);
-
         numberLines--;
-        numberCols-= 2;
     }
 
     // constructor for dataset split based on a certain attribute (given its index) and its value
@@ -145,6 +145,7 @@ public class Dataset {
     
     
     public List<Boolean> getNum() {return isNumerical;}
+    public List<double[]> get_all_intervals() {return all_intervals;}
     
     public int numberLines() {return numberLines;}
     public int numberCols() {return numberCols;}
@@ -183,7 +184,8 @@ public class Dataset {
             if (isNumerical.get(j)) {
                 int number_of_intervals = (int)Math.round(1 + Utility.log2(numberLines));
                 double[] list_of_interval_values = Utility.createIntervals(col(j), number_of_intervals);
-                
+                all_intervals.add(list_of_interval_values);
+
                 List<Object> formatted_col = new ArrayList<>();
                 List<Object> formatted_col_options = new ArrayList<>();
                 for (int k = 0; k < list_of_all_cols.get(j).size(); k++) {
@@ -220,6 +222,55 @@ public class Dataset {
                 options_per_attribute.set(j, formatted_col_options);
                 list_of_all_cols.set(j, formatted_col);
             }
+            else all_intervals.add(null);
+        }
+    }
+
+
+    public void discretize(List<double[]> intervals) {
+        for (int j = 0; j < numberCols; j++) {
+            if (isNumerical.get(j)) {
+                double[] list_of_interval_values = intervals.get(j);
+                all_intervals.add(intervals.get(j));
+
+                List<Object> formatted_col = new ArrayList<>();
+                List<Object> formatted_col_options = new ArrayList<>();
+                for (int k = 0; k < list_of_all_cols.get(j).size(); k++) {
+                    List<String> line = new ArrayList<>(csv.get(k+1));
+                    for (int i = 0; i < list_of_interval_values.length - 1; i++) {
+                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
+                            Object o = "["+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
+                            formatted_col.add(o);
+                            line.set(j+1, o.toString());
+                            if (!formatted_col_options.contains(o)) {
+                                formatted_col_options.add(o);
+                            }
+                            break;
+                        }
+                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[0]) {
+                            Object o = "<" + list_of_interval_values[0];
+                            formatted_col.add(o);
+                            line.set(j+1, o.toString());
+                            break;
+                        }
+                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[list_of_interval_values.length - 1]) {
+                            Object o = ">=" + list_of_interval_values[list_of_interval_values.length - 1];
+                            formatted_col.add(o);
+                            line.set(j+1, o.toString());
+                            break;
+                        }
+                    }
+                    csv.set(k+1, line);
+                }
+
+                formatted_col_options.add("<" + list_of_interval_values[0]);
+                formatted_col_options.add(">=" + list_of_interval_values[list_of_interval_values.length - 1]);
+
+                options_per_attribute.set(j, formatted_col_options);
+                list_of_all_cols.set(j, formatted_col);
+            }
+            else all_intervals.add(null);
+
         }
     }
 
