@@ -10,11 +10,12 @@ public class Program {
         dt.fit(dt.root, ds);
         dt.printDT();
 
-        String str;
+        String str = in.nextLine();
 
+        while(!str.equals("exit")) {
 
-    
-
+            if (in.hasNextLine()) str = in.nextLine();
+        }
 
         in.close();
     }

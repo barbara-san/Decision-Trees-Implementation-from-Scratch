@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Dataset {
 
-    private List<List<String>> csv = new ArrayList<>(); //csv as given, line by line, including index and attribute names
+    private List<List<String>> csv = new ArrayList<>(); //list of all lines, including index and attribute names
     private List<List<Object>> list_of_all_cols = new ArrayList<>(); //list of all the columns
     private List<Object> target = new ArrayList<>(); // target
     private List<String> attributes = new ArrayList<>(); // list of all attributes
@@ -226,7 +226,7 @@ public class Dataset {
         }
     }
 
-
+    // discretizes predict dataset
     public void discretize(List<double[]> intervals) {
         for (int j = 0; j < numberCols; j++) {
             if (isNumerical.get(j)) {
@@ -283,6 +283,7 @@ public class Dataset {
             }
             System.out.println("");
         }
+        System.out.println("");
     }
 
     public void print_options_per_attribute(){
@@ -293,6 +294,7 @@ public class Dataset {
             }
             System.out.println("");
         }
+        System.out.println("");
     }
 
     public void printAllCollumns(){
@@ -302,6 +304,7 @@ public class Dataset {
             }
             System.out.println("");
         }
+        System.out.println("");
     }
 
 }

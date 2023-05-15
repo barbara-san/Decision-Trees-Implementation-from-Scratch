@@ -3,24 +3,18 @@
 public class Try {
     public static void main(String[] args) {
         //System.out.println("RESTAURANT");
-        Dataset ds = new Dataset("Datasets/weather.csv", true);
+        Dataset ds = new Dataset("Datasets/iris.csv", true);
         DecisionTree dt = new DecisionTree(ds);
         ds.printCSV();
-        System.out.println(' ');
 
         ds.discretize();
-        ds.printCSV();
-        System.out.println(' ');
         dt.fit(dt.root, ds);
         
         dt.printDT();
-        System.out.println(' ');
 
-        Dataset ds2 = new Dataset("Datasets/weather_for_pred.csv", false);
+        Dataset ds2 = new Dataset("Datasets/iris_for_pred.csv", false);
         ds2.discretize(ds.get_all_intervals());
-        ds2.printCSV();
-        System.out.println(' ');
-        //dt.predict(ds2);
+
         System.out.println(dt.predict(ds2));
 
         /* String line = "Yes,No,Yes,Yes,Full,$,No,No,Thai,10-30";
