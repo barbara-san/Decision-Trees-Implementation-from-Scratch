@@ -17,6 +17,7 @@ public class Entropy {
     private static double probcalc(List<Object> AttributeCol, Object attribute, List<Object> list, Object target_i) {
         double count = 0;
         double total = 0;
+        System.out.println(AttributeCol.size());
         for (int j = 0; j < AttributeCol.size(); j++) {
             if (AttributeCol.get(j).equals(attribute)) {
                 total++;

@@ -183,6 +183,7 @@ public class Dataset {
             if (isNumerical.get(j)) {
                 int number_of_intervals = (int)Math.round(1 + Utility.log2(numberLines));
                 double[] list_of_interval_values = Intervals.getIntervals(col(j), number_of_intervals);
+                
                 List<Object> formatted_col = new ArrayList<>();
                 List<Object> formatted_col_options = new ArrayList<>();
                 for (int k = 0; k < list_of_all_cols.get(j).size(); k++) {
@@ -195,16 +196,19 @@ public class Dataset {
                             if (!formatted_col_options.contains(o)) {
                                 formatted_col_options.add(o);
                             }
+                            break;
                         }
                         else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) <= list_of_interval_values[0]) {
                             Object o = "<=" + list_of_interval_values[0];
                             formatted_col.add(o);
-                            line.set(j+1, o.toString()); 
+                            line.set(j+1, o.toString());
+                            break;
                         }
                         else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[number_of_intervals]) {
                             Object o = ">=" + list_of_interval_values[number_of_intervals];
                             formatted_col.add(o);
-                            line.set(j+1, o.toString()); 
+                            line.set(j+1, o.toString());
+                            break;
                         }
                     }
                     csv.set(k+1, line);
