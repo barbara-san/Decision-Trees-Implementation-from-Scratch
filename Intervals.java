@@ -24,7 +24,7 @@ public class Intervals {
             int intervalIndex = findIndex(value, data, intervalBounds, freq, num);
             freq[intervalIndex]++;
         }
-        intervalBounds[num] += 0.01;
+        //intervalBounds[num] += 0.01;
 
         double scale = Math.pow(10, 3);
         for (int i = 0; i < intervalBounds.length; i++) {

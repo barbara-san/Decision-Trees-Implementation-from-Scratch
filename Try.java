@@ -8,9 +8,9 @@ public class Try {
         ds.printCSV();
         System.out.println(' ');
 
-        //ds.discretize();
+        ds.discretize();
         dt.fit(dt.root, ds);
-        ds.printAllCollumns();
+        //ds.printAllCollumns();
         
         dt.printDT();
         System.out.println(' ');

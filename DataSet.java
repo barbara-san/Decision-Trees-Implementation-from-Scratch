@@ -188,28 +188,34 @@ public class Dataset {
                 for (int k = 0; k < list_of_all_cols.get(j).size(); k++) {
                     List<String> line = new ArrayList<>(csv.get(k+1));
                     for (int i = 0; i < number_of_intervals; i++) {
-                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
-                            Object o;
-                            if (i == number_of_intervals-1) o = '>' + list_of_interval_values[i];
-                            else o = "["+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
+                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) > list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
+                            Object o = "]"+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
                             formatted_col.add(o);
                             line.set(j+1, o.toString());
                             if (!formatted_col_options.contains(o)) {
                                 formatted_col_options.add(o);
                             }
                         }
-                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[number_of_intervals - 1]) {
-                            Object o = '>' + list_of_interval_values[i];
+                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) <= list_of_interval_values[0]) {
+                            Object o = "<=" + list_of_interval_values[0];
                             formatted_col.add(o);
-                            line.set(j+1, o.toString());
+                            line.set(j+1, o.toString()); 
+                        }
+                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[number_of_intervals]) {
+                            Object o = ">=" + list_of_interval_values[number_of_intervals];
+                            formatted_col.add(o);
+                            line.set(j+1, o.toString()); 
                         }
                     }
                     csv.set(k+1, line);
                 }
+                formatted_col_options.add("<=" + list_of_interval_values[0]);
+                formatted_col_options.add(">=" + list_of_interval_values[number_of_intervals]);
                 options_per_attribute.set(j, formatted_col_options);
                 list_of_all_cols.set(j, formatted_col);
             }
         }
+        printCSV();
     }
 
 
