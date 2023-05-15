@@ -1,9 +1,9 @@
-//import java.util.*;
+import java.util.*;
 
 public class Try {
     public static void main(String[] args) {
         //System.out.println("RESTAURANT");
-        DataSet ds = new DataSet("datasets/restaurant.csv");
+        Dataset ds = new Dataset("Datasets/restaurant.csv", true);
         DecisionTree dt = new DecisionTree(ds);
         ds.printCSV();
         System.out.println(' ');
@@ -11,22 +11,29 @@ public class Try {
         ds.format();
         dt.fit(dt.root, ds);
         
-        //System.out.println(' ');
         dt.printDT();
+        System.out.println(' ');
+
+        String line = "Yes,No,Yes,Yes,Full,$,No,No,Thai,10-30";
+        String[] values = line.split(",");
+        List<Object> list = new ArrayList<Object>(Arrays.asList(values));
+        System.out.println(dt.predict(list));
+
+        /* Dataset list = new Dataset("Datasets/res-pred.csv");
+        List<String> s = dt.predict(list);
+        System.out.println(s); */
         //ds.printAllCollumns();
         //for (int i = 0; i < ds.colnum; i++) System.out.println(ds.getCSV().get(0).get(i+1) + ": " + Entropy.entcalc(ds, i));
         //System.out.println(Entropy.entcalc(ds, 0));
         //System.out.println(' ');
-        //System.out.println(ds.size);
-        //System.out.println(ds.getPosNum());
-        /* List<DataSet> dss = ds.split(ds, 8);
-        for (DataSet d : dss) {
+        /* List<Dataset> dss = ds.split(ds, 8);
+        for (Dataset d : dss) {
             d.printCSV();
             System.out.println(' ');
         } */
 
         /* System.out.println("WEATHER - before");
-        ds = new DataSet("datasets/weather.csv");
+        ds = new Dataset("Datasets/weather.csv");
         ds.printAllCollumns();
         ds.format();
         System.out.println(' ');
@@ -38,7 +45,7 @@ public class Try {
         System.out.println(' ');
         System.out.println(' ');
         System.out.println("IRIS - before");
-        ds = new DataSet("datasets/iris.csv");
+        ds = new Dataset("Datasets/iris.csv");
         ds.printAllCollumns();
         ds.format();
         System.out.println(' ');
