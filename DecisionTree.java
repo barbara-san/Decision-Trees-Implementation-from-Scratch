@@ -26,7 +26,7 @@ public class DecisionTree {
                 Node r2;
                 if (ds2.numberLines() > 0 && ds2.numberCols() > 0) r2 = new Node(ds2, false, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), r.level()+1);
                 else {
-                    String most_common = ds.getMostCommonClass(ds);
+                    String most_common = ds.plurarityValue(ds);
                     r2 = new Node(ds2, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), most_common, r.level() + 1);
                     //System.out.println("here");
                 }

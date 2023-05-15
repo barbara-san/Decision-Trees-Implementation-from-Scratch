@@ -3,21 +3,22 @@ import java.util.*;
 public class Try {
     public static void main(String[] args) {
         //System.out.println("RESTAURANT");
-        Dataset ds = new Dataset("Datasets/restaurant.csv", true);
+        Dataset ds = new Dataset("Datasets/weather.csv", true);
         DecisionTree dt = new DecisionTree(ds);
         ds.printCSV();
         System.out.println(' ');
 
-        ds.format();
+        //ds.discretize();
         dt.fit(dt.root, ds);
+        ds.printAllCollumns();
         
         dt.printDT();
         System.out.println(' ');
 
-        String line = "Yes,No,Yes,Yes,Full,$,No,No,Thai,10-30";
+        /* String line = "Yes,No,Yes,Yes,Full,$,No,No,Thai,10-30";
         String[] values = line.split(",");
         List<Object> list = new ArrayList<Object>(Arrays.asList(values));
-        System.out.println(dt.predict(list));
+        System.out.println(dt.predict(list)); */
 
         /* Dataset list = new Dataset("Datasets/res-pred.csv");
         List<String> s = dt.predict(list);

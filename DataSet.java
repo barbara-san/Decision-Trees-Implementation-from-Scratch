@@ -30,11 +30,11 @@ public class Dataset {
                 csv.add(list);
                 numberLines++;
                 if (first_line) {
-                    numberCols = csv.get(0).size()-1;
+                    numberCols = csv.get(0).size();
                     for (int i = 0; i < numberCols; i++) {
-                        List<Object> col = new ArrayList<>();
-                        list_of_all_cols.add(col);
                         List<Object> option = new ArrayList<>();
+                        List<Object> attribute = new ArrayList<>();
+                        list_of_all_cols.add(attribute);
                         options_per_attribute.add(option);
                     }
                     first_line = false;
@@ -44,8 +44,8 @@ public class Dataset {
                     for (List<Object> cur_atr : options_per_attribute) {
                         String value = csv.get(cur_line).get(cur_row);
                         if (Utility.isNumeric(value)) {
-                            double valueDouble = Double.parseDouble(value);
-                            list_of_all_cols.get(cur_row).add(valueDouble);
+                            double valueAsDouble = Double.parseDouble(value);
+                            list_of_all_cols.get(cur_row).add(valueAsDouble);
                         }
                         else list_of_all_cols.get(cur_row).add(value);
 
@@ -79,7 +79,7 @@ public class Dataset {
         options_per_attribute.remove(0);
 
         numberLines--;
-        numberCols--;
+        numberCols-= 2;
     }
 
     // constructor for dataset split based on a certain attribute (given its index) and its value
@@ -113,42 +113,28 @@ public class Dataset {
         for (int m = 1; m < csv.size(); m++) {
             csv.get(m).remove(i+1);
         }
+
+        csv.get(0).remove(i+1);
+        list_of_all_cols.remove(i);
         options_per_attribute.remove(i);
         isNumerical.remove(i);
         attributes.remove(i);
-        list_of_all_cols.remove(i);
-        csv.get(0).remove(i+1);
         numberLines = csv.size()-1;
         numberCols = list_of_all_cols.size();
     }
 
-    public String getMostCommonClass(Dataset ds) {
-        HashMap<Object, Integer> count = new HashMap<Object, Integer>();
-        for (Object element : target) {
-            if (!count.containsKey(element)) count.put(element, 1);
-            else count.put(element, count.get(element)+1);
-        }
-        int max = 0;
-        String value = "";
-        for (Map.Entry<Object, Integer> set : count.entrySet()) {
-            if (set.getValue() > max) value = set.getKey().toString();
-        }
-        return value;
-    }
-
-    
+    // getters
     public List<List<String>> csv() {return csv;}
-
     public List<List<Object>> get_all_Cols() {return list_of_all_cols;}
-
     public List<Object> col(int i) {return list_of_all_cols.get(i);}
-
     public List<Object> target() {return target;}
-
-    public String attribute(int i) {return attributes.get(i);}
-
+    
+    
     public List<String> getAttributes() {return attributes;}
-
+    public String attribute(int i) {return attributes.get(i);}
+    
+    public List<List<Object>> get_all_options_per_attribute() {return options_per_attribute;}
+    public List<Object> getOptions(int i) {return options_per_attribute.get(i);}
     public List<Object> get_target_options() {
         List<Object> opt = new ArrayList<>();
         for (int i = 0; i < numberLines; i++) {
@@ -156,26 +142,32 @@ public class Dataset {
         }
         return opt;
     }
-
-    public List<Object> getOptions(int i) {return options_per_attribute.get(i);}
-
-    public List<List<Object>> get_all_options_per_attribute() {return options_per_attribute;}
-
+    
+    
     public List<Boolean> getNum() {return isNumerical;}
-
+    
     public int numberLines() {return numberLines;}
     public int numberCols() {return numberCols;}
+    
 
-/*     public int getPosNum() {
-        int count = 0;
-        for (int i = 0; i < numberLines; i++) {
-            if (target().get(i).equals(get_target_options().get(0))) {
-                count++;
-            }
+    // useful functions
+
+    // returns the most common class in a dataset
+    public String plurarityValue(Dataset ds) {
+        HashMap<Object, Integer> count = new HashMap<Object, Integer>();
+        for (Object value : target) {
+            if (!count.containsKey(value)) count.put(value, 1);
+            else count.put(value, count.get(value)+1);
         }
-        return count;
-    } */
+        int max = 0;
+        String most_common_value = "";
+        for (Map.Entry<Object, Integer> value : count.entrySet()) {
+            if (value.getValue() > max) {most_common_value = value.getKey().toString(); max = value.getValue();}
+        }
+        return most_common_value;
+    }
 
+    // returns a list of new datasets which are the result of splitting the original dataset based on a certain attribute, given its index
     public List<Dataset> split(Dataset ds, int i) {
         List<Dataset> new_datasets = new ArrayList<>();
         for (int j = 0; j < options_per_attribute.get(i).size(); j++) {
@@ -185,27 +177,31 @@ public class Dataset {
         return new_datasets;
     }
 
-    public void format() {
+    // discretizes the dataset
+    public void discretize() {
         for (int j = 0; j < numberCols; j++) {
             if (isNumerical.get(j)) {
                 int number_of_intervals = (int)Math.round(1 + Utility.log2(numberLines));
                 double[] list_of_interval_values = Intervals.getIntervals(col(j), number_of_intervals);
-
                 List<Object> formatted_col = new ArrayList<>();
                 List<Object> formatted_col_options = new ArrayList<>();
-
                 for (int k = 0; k < list_of_all_cols.get(j).size(); k++) {
                     List<String> line = new ArrayList<>(csv.get(k+1));
                     for (int i = 0; i < number_of_intervals; i++) {
-                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[i]
-                        && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
-//////////////////////////////// here!!!!!!
-                            Object o = "["+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
+                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
+                            Object o;
+                            if (i == number_of_intervals-1) o = '>' + list_of_interval_values[i];
+                            else o = "["+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
                             formatted_col.add(o);
                             line.set(j+1, o.toString());
                             if (!formatted_col_options.contains(o)) {
                                 formatted_col_options.add(o);
                             }
+                        }
+                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[number_of_intervals - 1]) {
+                            Object o = '>' + list_of_interval_values[i];
+                            formatted_col.add(o);
+                            line.set(j+1, o.toString());
                         }
                     }
                     csv.set(k+1, line);
@@ -228,7 +224,7 @@ public class Dataset {
         }
     }
 
-    public void print_options_per_attribute(){
+    public void printoptions_per_attribute(){
         System.out.println("PRINT options_per_attribute");
         for (List<Object> aa : options_per_attribute){
             for (int i = 0; i < aa.size(); i++) {
@@ -239,7 +235,6 @@ public class Dataset {
     }
 
     public void printAllCollumns(){
-        System.out.println("PRINT ALL COLS");
         for (List<Object> line: list_of_all_cols){
             for (Object value: line) {
                 System.out.print(value + " ");
