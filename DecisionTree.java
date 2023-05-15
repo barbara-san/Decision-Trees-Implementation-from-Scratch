@@ -75,7 +75,7 @@ public class DecisionTree {
                 }
             if (isroot) {isroot = false; continue;}
             String space = new String(new char[r.level()-1]).replace("\0", "\t");
-            System.out.println(space + r.getSplitConditionAttribute() + " = " + r.attributeValue());
+            System.out.println(space + r.getSplitConditionAttribute() + ": " + r.attributeValue());
             if (r.isFinal()) System.out.println(space + "class = " + r.classification() + "; count = " + r.count());
             System.out.println(' ');
             

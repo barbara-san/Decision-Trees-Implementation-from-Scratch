@@ -15,7 +15,7 @@ Este projeto foi desenvolvido no âmbito da Unidade Curricular *Inteligência Ar
 
 O seu principal objetivo é a implementação completa de um desenvolvedor de uma [Árvore de Decisão](https://en.wikipedia.org/wiki/Decision_tree "Descrição de Árvores de Decisão - Wikipédia (Inglês)") que consiga, posteriormente, prever o resultado de um determinado atributo quando em falta, recebendo dados sobre os outros atributos. Para tal, foi escolhida a linguagem Java, devido à sua relação com Programação Orientada a Objetos, o facto de ser *strongly-typed*, o seu "*Garbage Collector*", entre outros motivos.
 
-!!!!!!!!!!!!!!!!!O programa foi compilado tanto em *Ubuntu 20.04 LTS* com *javac 11.0.17* como *macOS Monterey version 12.2.1* com *javac 18.0.2.1*.
+O programa foi compilado tanto em *Ubuntu 20.04.5 LTS* com *javac 11.0.17*.
 
 ### Instruções de Compilação e Desenvolvimento da Árvore
 
@@ -24,12 +24,12 @@ Para poder executar cada problema é primeiro necessário compilar todos os fich
 `javac *.java`
 
 Após a compilação de todos os ficheiros, é possível, finalmente, executá-los.  
-!!!!!!!!!!!!!!!!!Para leitura e desenvolvimento da árvore de decisão para cada um dos datasets disponibilizados, utilizar o seguinte formato de entrada `java Main type`, onde "type" deve ser substituido pelo nome do dataset desejado:  
-- `java Main Restaurant`
-- `java Main Weather`
-- `java Main Iris`
+!!!!!!!!!!!!!!!!!Para leitura e desenvolvimento da árvore de decisão para cada um dos datasets disponibilizados, utilizar o seguinte formato de entrada `java Program path`, onde "path" deve ser substituido pelo caminho até ao dataset desejado (em formato csv):  
+- `java Program datasets/restaurant`
+- `java Program datasets/weather`
+- `java Program datasets/iris`
 
-Após a escolha do dataset, é esperado que o programa desenvolva a devida decision tree.
+Após a escolha do dataset, é esperado que o programa desenvolva a respetiva decision tree, que será impressa no terminal.
 
 ### Instruções para Adição de Novos Dados para Previsão
 

@@ -1,4 +1,4 @@
-import java.util.*;
+//import java.util.*;
 
 public class Try {
     public static void main(String[] args) {
@@ -10,7 +10,6 @@ public class Try {
 
         ds.discretize();
         dt.fit(dt.root, ds);
-        //ds.printAllCollumns();
         
         dt.printDT();
         System.out.println(' ');

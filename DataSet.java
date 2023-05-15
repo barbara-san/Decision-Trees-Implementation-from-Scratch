@@ -182,15 +182,15 @@ public class Dataset {
         for (int j = 0; j < numberCols; j++) {
             if (isNumerical.get(j)) {
                 int number_of_intervals = (int)Math.round(1 + Utility.log2(numberLines));
-                double[] list_of_interval_values = Intervals.getIntervals(col(j), number_of_intervals);
+                double[] list_of_interval_values = Utility.createIntervals(col(j), number_of_intervals);
                 
                 List<Object> formatted_col = new ArrayList<>();
                 List<Object> formatted_col_options = new ArrayList<>();
                 for (int k = 0; k < list_of_all_cols.get(j).size(); k++) {
                     List<String> line = new ArrayList<>(csv.get(k+1));
                     for (int i = 0; i < number_of_intervals; i++) {
-                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) > list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
-                            Object o = "]"+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
+                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
+                            Object o = "["+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
                             formatted_col.add(o);
                             line.set(j+1, o.toString());
                             if (!formatted_col_options.contains(o)) {
@@ -198,8 +198,8 @@ public class Dataset {
                             }
                             break;
                         }
-                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) <= list_of_interval_values[0]) {
-                            Object o = "<=" + list_of_interval_values[0];
+                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[0]) {
+                            Object o = "<" + list_of_interval_values[0];
                             formatted_col.add(o);
                             line.set(j+1, o.toString());
                             break;
@@ -213,17 +213,17 @@ public class Dataset {
                     }
                     csv.set(k+1, line);
                 }
-                formatted_col_options.add("<=" + list_of_interval_values[0]);
+
+                formatted_col_options.add("<" + list_of_interval_values[0]);
                 formatted_col_options.add(">=" + list_of_interval_values[number_of_intervals]);
+
                 options_per_attribute.set(j, formatted_col_options);
                 list_of_all_cols.set(j, formatted_col);
             }
         }
-        printCSV();
     }
 
-
-
+    // print functions
     public void printCSV(){
         System.out.println("PRINT CSV");
         for(List<String> line: csv) {
@@ -234,8 +234,8 @@ public class Dataset {
         }
     }
 
-    public void printoptions_per_attribute(){
-        System.out.println("PRINT options_per_attribute");
+    public void print_options_per_attribute(){
+        System.out.println("PRINT ALL OPTIONS");
         for (List<Object> aa : options_per_attribute){
             for (int i = 0; i < aa.size(); i++) {
                 System.out.print(aa.get(i).toString() + ' ');
@@ -253,12 +253,4 @@ public class Dataset {
         }
     }
 
-    public void printNum(){
-        System.out.println("PRINT NUM OR NOT");
-        for (Boolean value: isNumerical) {
-            System.out.print(value + " ");
-        }
-        System.out.println("");
-
-    }
 }
