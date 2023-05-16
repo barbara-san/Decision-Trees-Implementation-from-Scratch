@@ -14,8 +14,11 @@ public class Try {
 
         Dataset ds2 = new Dataset("Datasets/iris_for_pred.csv", false);
         ds2.discretize(ds.get_all_intervals());
+        ds2.printCSV();
 
         System.out.println(dt.predict(ds2));
+
+        ds2.printCSV();
 
         /* String line = "Yes,No,Yes,Yes,Full,$,No,No,Thai,10-30";
         String[] values = line.split(",");

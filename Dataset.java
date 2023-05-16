@@ -276,10 +276,10 @@ public class Dataset {
 
     // print functions
     public void printCSV(){
-        System.out.println("PRINT CSV");
+        //System.out.println("PRINT CSV");
         for(List<String> line: csv) {
             for (String value: line) {
-                System.out.print(value + ' ');
+                System.out.print(Utility.ANSI_CYAN + value + ' ' + Utility.ANSI_RESET);
             }
             System.out.println("");
         }

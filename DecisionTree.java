@@ -4,6 +4,7 @@ public class DecisionTree {
 
     Node root; // first node, root
 
+
     // constructor based on a dataset
     DecisionTree(Dataset ds){
         root = new Node(ds, true, null, null, 0);
@@ -48,14 +49,15 @@ public class DecisionTree {
 
     // function used to predict the class of an example
     private String predict(List<String> line) {
+        List<String> for_prediction = new ArrayList<>(line);
         Node r = root;
         while (!r.isFinal()) {
             for (Node r2 : r.children()) {
                 int i = r.ds().getAttributes().indexOf(r2.splitConditionAttribute());
-                if (r2.attributeValue().equals(line.get(i+1))) {
+                if (r2.attributeValue().equals(for_prediction.get(i+1))) {
                     if (r.isFinal()) return r.classification();
                     r = r2;
-                    line.remove(i+1);
+                    for_prediction.remove(i+1);
                     break;
                 }
             }
@@ -74,24 +76,37 @@ public class DecisionTree {
 
     // prints the Decision Tree
     public void printDT() {
+        Map<String, Integer> attributes = new HashMap<String, Integer>();
+
+        for (String att : root.ds().getAttributes()) {
+            attributes.put(att, 0);
+        }
+
         Stack<Node> s = new Stack<Node>();
         s.add(root);
         boolean isRoot = true;
-        int count = 0;
         while (!s.isEmpty()) {
             Node r = s.pop();
+            String space = "";
+            if (!isRoot) {
+                space = new String(new char[r.level()-1]).replace("\0", "\t");
+                if (attributes.get(r.splitConditionAttribute()) == 0) System.out.println(Utility.ANSI_PURPLE + space + r.splitConditionAttribute() + Utility.ANSI_RESET);
+            }
 
-            for (Node son : r.children()) {if (son != null) s.add(son);}
+            for (Node son : r.children()) {
+                if (son != null) s.add(son);
+                attributes.put(son.splitConditionAttribute(), attributes.get(son.splitConditionAttribute()) + 1);
+            }
             if (isRoot) {isRoot = false; continue;}
 
-            String space = new String(new char[r.level()-1]).replace("\0", "\t");
-            System.out.println(space + r.splitConditionAttribute() + ": " + r.attributeValue());
+            
+            System.out.print(Utility.ANSI_PURPLE + space + "  " + r.attributeValue() + Utility.ANSI_RESET);
 
-            if (r.isFinal()) System.out.println(space + "class = " + r.classification() + "; count = " + r.count());
-            if (r.isFinal()) count += r.count();
+            if (r.isFinal()) System.out.println(Utility.ANSI_PURPLE + ": " + r.classification() + " (" + r.count() + ")" + Utility.ANSI_RESET);
+            System.out.println("");
 
-            System.out.println(' ');
+            attributes.put(r.splitConditionAttribute(), attributes.get(r.splitConditionAttribute()) - 1);
         }
-        System.out.println(count);
+        System.out.println("");
     }
 }
