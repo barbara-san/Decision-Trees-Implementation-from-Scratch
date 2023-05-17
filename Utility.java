@@ -6,6 +6,7 @@ public class Utility {
     public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
     
     // turn Object into double
     static Double toDouble(Object o) {

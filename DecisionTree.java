@@ -7,7 +7,7 @@ public class DecisionTree {
 
     // constructor based on a dataset
     DecisionTree(Dataset ds){
-        root = new Node(ds, true, null, null, 0);
+        root = new Node(ds, true, null, null, 0, null);
     }
 
     // function used to fill our decision tree, given a node (that will get children during the run of the function) and the respective dataset
@@ -32,12 +32,12 @@ public class DecisionTree {
             for (Dataset ds2 : split) {
                 Node r2;
                 // if the child node has examples
-                if (ds2.numberLines() > 0 && ds2.numberCols() >= 0) r2 = new Node(ds2, false, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), r.level()+1);
+                if (ds2.numberLines() > 0 && ds2.numberCols() >= 0) r2 = new Node(ds2, false, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), r.level()+1, r);
                 
                 // if the child node does not have examples
                 else {
                     String most_common = ds.plurarityValue(ds);
-                    r2 = new Node(ds2, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), most_common, r.level() + 1);
+                    r2 = new Node(ds2, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), most_common, r.level() + 1, r);
                 }
                 Node subtree = fit(r2, ds2);
                 r.addChild(subtree);
@@ -88,25 +88,24 @@ public class DecisionTree {
         while (!s.isEmpty()) {
             Node r = s.pop();
             String space = "";
-            if (!isRoot) {
-                space = new String(new char[r.level()-1]).replace("\0", "\t");
-                if (attributes.get(r.splitConditionAttribute()) == 0) System.out.println(Utility.ANSI_PURPLE + space + r.splitConditionAttribute() + Utility.ANSI_RESET);
-            }
-
+            
             for (Node son : r.children()) {
                 if (son != null) s.add(son);
-                attributes.put(son.splitConditionAttribute(), attributes.get(son.splitConditionAttribute()) + 1);
             }
             if (isRoot) {isRoot = false; continue;}
 
-            
+            space = new String(new char[r.level()-1]).replace("\0", "\t");
+            if (attributes.get(r.splitConditionAttribute()) == 0) {
+                System.out.println("");
+                System.out.println(Utility.ANSI_PURPLE_BACKGROUND + space + r.splitConditionAttribute() + Utility.ANSI_RESET);
+                System.out.println("");
+                attributes.put(r.splitConditionAttribute(), r.parent().children().size());
+            }
             System.out.print(Utility.ANSI_PURPLE + space + "  " + r.attributeValue() + Utility.ANSI_RESET);
 
             if (r.isFinal()) System.out.println(Utility.ANSI_PURPLE + ": " + r.classification() + " (" + r.count() + ")" + Utility.ANSI_RESET);
             System.out.println("");
-
             attributes.put(r.splitConditionAttribute(), attributes.get(r.splitConditionAttribute()) - 1);
         }
-        System.out.println("");
     }
 }
