@@ -14,7 +14,7 @@
 
 Este projeto foi desenvolvido no âmbito da Unidade Curricular *Inteligência Artificial*, durante o ano letivo 2022/2023, na Faculdade de Ciências da Universidade do Porto, pela aluna Bárbara Santos.
 
-O seu principal objetivo é a implementação completa de um desenvolvedor de uma [Árvore de Decisão](https://en.wikipedia.org/wiki/Decision_tree "Descrição de Árvores de Decisão - Wikipédia (Inglês)") que consiga, posteriormente, prever o resultado de um determinado atributo quando em falta, recebendo dados sobre os outros atributos. Para tal, foi escolhida a linguagem Java, devido à sua relação com Programação Orientada a Objetos, o facto de ser *strongly-typed*, o seu "*Garbage Collector*", entre outros motivos.
+O seu principal objetivo é a implementação completa de um desenvolvedor de uma [Árvore de Decisão](https://en.wikipedia.org/wiki/Decision_tree "Descrição de Árvores de Decisão - Wikipédia (Inglês)") que consiga, posteriormente, prever o resultado de um determinado atributo target, recebendo dados sobre os outros atributos. Para tal, foi escolhida a linguagem Java, devido à sua relação com Programação Orientada a Objetos, o facto de ser *strongly-typed*, o seu "*Garbage Collector*", entre outros motivos.
 
 O programa foi compilado tanto em *Ubuntu 20.04.5 LTS* com *javac 11.0.17*.
 
@@ -38,7 +38,7 @@ Após a criação da Decision Tree, é possível aplicar uma série de comandos 
 
 - `print dt`: imprime a decision tree criada.
 - `print ds used for training`: imprime o dataset fornecido para treino da Decision Tree.
-- `predict path`: "path" deve ser substituido pelo caminho até ao dataset cuja target se pretende prever (este comando irá imprimir sozinho a previsão para cada linha do csv no formato de uma lista).
+- `predict path`: prevê a coluna target (inexistente) para o ficheiro localizado no caminho fornecido. "path" deve ser substituido pelo caminho até ao dataset (este comando irá imprimir sozinho a previsão para cada linha do csv).
 - `print ds used for prediction`: imprime o último dataset fornecido para previsão.
 - `print prediction`: imprime novamente a última previsão feita.
 - `exit`: termina o programa.
