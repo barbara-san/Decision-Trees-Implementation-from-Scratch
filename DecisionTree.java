@@ -4,7 +4,6 @@ public class DecisionTree {
 
     Node root; // first node, root
 
-
     // constructor based on a dataset
     DecisionTree(Dataset ds){
         root = new Node(ds, true, null, null, 0, null);
@@ -115,39 +114,4 @@ public class DecisionTree {
         }
     }
 
-
-    // prints the Decision Tree with colour purple
-    public void printDT_color() {
-        Map<String, Integer> attributes = new HashMap<String, Integer>();
-
-        for (String att : root.ds().getAttributes()) {
-            attributes.put(att, 0);
-        }
-
-        Stack<Node> s = new Stack<Node>();
-        s.add(root);
-        boolean isRoot = true;
-        while (!s.isEmpty()) {
-            Node r = s.pop();
-            String space = "";
-            
-            for (Node son : r.children()) {
-                if (son != null) s.add(son);
-            }
-            if (isRoot) {isRoot = false; continue;}
-
-            space = new String(new char[r.level()-1]).replace("\0", "\t");
-            if (attributes.get(r.splitConditionAttribute()) == 0) {
-                System.out.println("");
-                System.out.println(Utility.ANSI_PURPLE_BACKGROUND + space + "<" + r.splitConditionAttribute() + ">" + Utility.ANSI_RESET);
-                System.out.println("");
-                attributes.put(r.splitConditionAttribute(), r.parent().children().size());
-            }
-            System.out.print(Utility.ANSI_PURPLE + space + "  " + r.attributeValue() + Utility.ANSI_RESET);
-
-            if (r.isFinal()) System.out.println(Utility.ANSI_PURPLE + ": " + r.classification() + " (" + r.count() + ")" + Utility.ANSI_RESET);
-            System.out.println("");
-            attributes.put(r.splitConditionAttribute(), attributes.get(r.splitConditionAttribute()) - 1);
-        }
-    }
 }
