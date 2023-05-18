@@ -56,40 +56,16 @@ public class Node {
     }
 
     //getters
+    int level() {return level;}
+    int count() {return count;}
+    boolean isFinal() {return isFinal;}
     
-    List<Node> children() {
-        return children;
-    }
-
-    Dataset ds() {
-        return ds;
-    }
-
-    String classification() {
-        return classification;
-    }
-
-    String splitConditionAttribute() {
-        return splitConditionAttribute;
-    }
-
-    String attributeValue() {
-        return attributeValue;
-    }
-
-    int count() {
-        return count;
-    }
-
-    int level() {
-        return level;
-    }
-
-    boolean isFinal() {
-        return isFinal;
-    }
-
-    Node parent() {
-        return parent;
-    }
+    Dataset ds() {return ds;}
+    
+    String classification() {return classification;}
+    String splitConditionAttribute() {return splitConditionAttribute;}
+    String attributeValue() {return attributeValue;}
+    
+    List<Node> children() {return children;}
+    Node parent() {return parent;}
 }

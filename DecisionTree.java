@@ -14,11 +14,11 @@ public class DecisionTree {
     public Node fit(Node r, Dataset ds) {
         if (r.isFinal()) return r;
         else {
-            
+
             // get best gain value and the index of its attribute
             double avalue = -1; int aindex = 0;
             for (int i = 0; i < ds.numberCols(); i++) {
-                double ent = Entropy.getGain(ds, i);
+                double ent = Entropy.gain(ds, i);
                 if (avalue < ent){
                     avalue = ent;
                     aindex = i;

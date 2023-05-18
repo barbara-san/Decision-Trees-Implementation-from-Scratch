@@ -57,12 +57,8 @@ public class Entropy {
         return result;
     }
 
-    private static double gain(Dataset ds, int index) {
+    public static double gain(Dataset ds, int index) {
         double g = Hcalc(ds.target(), ds.get_target_options()) - remainder(ds,index);
         return g;
-    }
-
-    public static double getGain(Dataset ds, int index) {
-        return gain(ds, index);
     }
 }
