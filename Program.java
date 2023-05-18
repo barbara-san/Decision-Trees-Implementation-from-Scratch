@@ -6,6 +6,7 @@ public class Program {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
+        boolean color = false;
         Dataset ds = new Dataset(args[0], true);
         Dataset ds2 = null;
         List<String> prediction = null;
@@ -18,12 +19,19 @@ public class Program {
         String str = in.nextLine();
 
         while(!str.equals("exit")) {
-            if (str.equals("print dt")) dt.printDT();
-            else if (str.equals("print ds used for training")) ds.printCSV();
+            if (str.equals("print dt")) dt.printDT(color);
+            else if (str.equals("color")) {
+                color = !color;
+                if (color) System.out.println(Utility.ANSI_RED + "colors activated!" + Utility.ANSI_RESET);
+                else System.out.println(Utility.ANSI_RED + "colors deactivated!" + Utility.ANSI_RESET);
+                System.out.println("");
+            }
+            else if (str.equals("print ds used for training")) ds.printCSV(color);
             else if (str.equals("print ds used for prediction")) {
-                if (ds2 != null) ds2.printCSV();
+                if (ds2 != null) ds2.printCSV(color);
                 else System.out.println(Utility.ANSI_RED + "no dataset for prediction was given yet\n" + Utility.ANSI_RESET);
             }
+            else if (str.equals("predict")) System.out.println(Utility.ANSI_RED + "no file given for prediction" + Utility.ANSI_RESET);
             else if (str.startsWith("predict")) {
                 String path = str.split(" ", 2)[1];
                 File file  = new File(path);
@@ -32,7 +40,11 @@ public class Program {
                     ds2.discretize(ds.get_all_intervals());
                     prediction = dt.predict(ds2);
                     int i = 1;
-                    for (String s : prediction) {System.out.println(Utility.ANSI_YELLOW + i + ": " + s + Utility.ANSI_RESET); i++;}
+                    for (String s : prediction) {
+                        if (color) System.out.println(Utility.ANSI_YELLOW + i + ": " + s + Utility.ANSI_RESET);
+                        else System.out.println(i + ": " + s);
+                        i++;
+                    }
                     System.out.println("");
                 }
                 else if (file.exists()) System.out.println(Utility.ANSI_RED + "file must be in csv format\n" + Utility.ANSI_RESET);
@@ -41,7 +53,11 @@ public class Program {
             else if (str.equals("print prediction")) {
                 if (ds2 != null) {
                     int i = 0;
-                    for (String s : prediction) {System.out.println(Utility.ANSI_YELLOW + i + ": " + s + Utility.ANSI_RESET); i++;}
+                    for (String s : prediction) {
+                        if (color) System.out.println(Utility.ANSI_YELLOW + i + ": " + s + Utility.ANSI_RESET);
+                        else System.out.println(i + ": " + s);
+                        i++;
+                    }
                     System.out.println("");
                 }
                 else System.out.println(Utility.ANSI_RED + "no dataset for prediction was given yet\n" + Utility.ANSI_RESET);

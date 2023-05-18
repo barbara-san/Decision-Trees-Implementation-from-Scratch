@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Dataset {
 
+    // class attributes
     private List<List<String>> csv = new ArrayList<>(); //list of all lines, including index and attribute names
     private List<List<Object>> list_of_all_cols = new ArrayList<>(); //list of all the columns
     private List<Object> target = new ArrayList<>(); // target
@@ -129,7 +130,6 @@ public class Dataset {
     public List<Object> col(int i) {return list_of_all_cols.get(i);}
     public List<Object> target() {return target;}
     
-    
     public List<String> getAttributes() {return attributes;}
     public String attribute(int i) {return attributes.get(i);}
     
@@ -143,18 +143,16 @@ public class Dataset {
         return opt;
     }
     
-    
     public List<Boolean> getNum() {return isNumerical;}
     public List<double[]> get_all_intervals() {return all_intervals;}
     
     public int numberLines() {return numberLines;}
     public int numberCols() {return numberCols;}
     
-
     // useful functions
 
     // returns the most common class in a dataset
-    public String plurarityValue(Dataset ds) {
+    public String plurarityValue() {
         HashMap<Object, Integer> count = new HashMap<Object, Integer>();
         for (Object value : target) {
             if (!count.containsKey(value)) count.put(value, 1);
@@ -169,10 +167,10 @@ public class Dataset {
     }
 
     // returns a list of new datasets which are the result of splitting the original dataset based on a certain attribute, given its index
-    public List<Dataset> split(Dataset ds, int i) {
+    public List<Dataset> split(int i) {
         List<Dataset> new_datasets = new ArrayList<>();
         for (int j = 0; j < options_per_attribute.get(i).size(); j++) {
-            Dataset ds2 = new Dataset(ds, i, options_per_attribute.get(i).get(j));
+            Dataset ds2 = new Dataset(this, i, options_per_attribute.get(i).get(j));
             new_datasets.add(ds2);
         }
         return new_datasets;
@@ -191,19 +189,19 @@ public class Dataset {
                 for (int k = 0; k < list_of_all_cols.get(j).size(); k++) {
                     List<String> line = new ArrayList<>(csv.get(k+1));
                     for (int i = 0; i < number_of_intervals; i++) {
-                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
+                        if (Utility.toDouble(list_of_all_cols.get(j).get(k)) <= list_of_interval_values[0]) {
+                            Object o = "<=" + list_of_interval_values[0];
+                            formatted_col.add(o);
+                            line.set(j+1, o.toString());
+                            break;
+                        }
+                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[i] && Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[i+1]) {
                             Object o = "["+ list_of_interval_values[i] + ',' + list_of_interval_values[i+1] + "[";
                             formatted_col.add(o);
                             line.set(j+1, o.toString());
                             if (!formatted_col_options.contains(o)) {
                                 formatted_col_options.add(o);
                             }
-                            break;
-                        }
-                        else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) < list_of_interval_values[0]) {
-                            Object o = "<" + list_of_interval_values[0];
-                            formatted_col.add(o);
-                            line.set(j+1, o.toString());
                             break;
                         }
                         else if (Utility.toDouble(list_of_all_cols.get(j).get(k)) >= list_of_interval_values[number_of_intervals]) {
@@ -216,7 +214,7 @@ public class Dataset {
                     csv.set(k+1, line);
                 }
 
-                formatted_col_options.add("<" + list_of_interval_values[0]);
+                formatted_col_options.add("<=" + list_of_interval_values[0]);
                 formatted_col_options.add(">=" + list_of_interval_values[number_of_intervals]);
 
                 options_per_attribute.set(j, formatted_col_options);
@@ -275,32 +273,12 @@ public class Dataset {
     }
 
     // print functions
-    public void printCSV(){
+    public void printCSV(boolean color) {
         //System.out.println("PRINT CSV");
         for(List<String> line: csv) {
             for (String value: line) {
-                System.out.print(Utility.ANSI_CYAN + value + ' ' + Utility.ANSI_RESET);
-            }
-            System.out.println("");
-        }
-        System.out.println("");
-    }
-
-    public void print_options_per_attribute(){
-        System.out.println("PRINT ALL OPTIONS");
-        for (List<Object> aa : options_per_attribute){
-            for (int i = 0; i < aa.size(); i++) {
-                System.out.print(aa.get(i).toString() + ' ');
-            }
-            System.out.println("");
-        }
-        System.out.println("");
-    }
-
-    public void printAllCollumns(){
-        for (List<Object> line: list_of_all_cols){
-            for (Object value: line) {
-                System.out.print(value + " ");
+                if (color) System.out.print(Utility.ANSI_CYAN + value + ' ' + Utility.ANSI_RESET);
+                else System.out.print(value + ' ');
             }
             System.out.println("");
         }

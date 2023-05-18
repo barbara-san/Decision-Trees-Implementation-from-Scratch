@@ -5,20 +5,20 @@ public class Try {
         //System.out.println("RESTAURANT");
         Dataset ds = new Dataset("Datasets/iris.csv", true);
         DecisionTree dt = new DecisionTree(ds);
-        ds.printCSV();
+        ds.printCSV(false);
 
         ds.discretize();
         dt.fit(dt.root, ds);
         
-        dt.printDT();
+        dt.printDT(false);
 
         Dataset ds2 = new Dataset("Datasets/iris_for_pred.csv", false);
         ds2.discretize(ds.get_all_intervals());
-        ds2.printCSV();
+        ds2.printCSV(false);
 
         System.out.println(dt.predict(ds2));
 
-        ds2.printCSV();
+        ds2.printCSV(false);
 
         /* String line = "Yes,No,Yes,Yes,Full,$,No,No,Thai,10-30";
         String[] values = line.split(",");

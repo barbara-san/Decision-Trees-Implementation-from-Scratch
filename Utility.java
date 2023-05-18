@@ -9,19 +9,19 @@ public class Utility {
     public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
     
     // turn Object into double
-    static Double toDouble(Object o) {
+    public static Double toDouble(Object o) {
         if (o instanceof Number) {return ((Number) o).doubleValue();}
         return null;
     }
 
     // returns log2 of a number
-    static double log2(double n){
+    public static double log2(double n) {
         if (n==0) n = 0.00000000000000000000000000000000001;
         return (Math.log(n) / Math.log(2));
     }
 
     //checks whether a string is numeric or not
-    static boolean isNumeric(String str) { 
+    public static boolean isNumeric(String str) { 
         try {  
             Double.parseDouble(str);  
             return true;
