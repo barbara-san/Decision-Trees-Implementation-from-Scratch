@@ -10,14 +10,13 @@ public class DecisionTree {
     }
 
     // function used to fill our decision tree, given a node (that will get children during the run of the function) and the respective dataset
-    public Node fit(Node r, Dataset ds) {
-        if (r.isFinal()) return r;
+    public Node fit(Node n) {
+        if (n.isFinal()) return n;
         else {
-
             // get best gain value and the index of its attribute
             double avalue = -1; int aindex = 0;
-            for (int i = 0; i < ds.numberCols(); i++) {
-                double ent = Entropy.gain(ds, i);
+            for (int i = 0; i < n.ds().numberCols(); i++) {
+                double ent = Entropy.gain(n.ds(), i);
                 if (avalue < ent){
                     avalue = ent;
                     aindex = i;
@@ -25,44 +24,44 @@ public class DecisionTree {
             }
 
             //split the dataset
-            List<Dataset> split = ds.split(aindex);
+            List<Dataset> split = n.ds().split(aindex);
 
             // add children
             int i = 0;
             for (Dataset ds2 : split) {
                 Node r2;
                 // if the child node has examples
-                if (ds2.numberLines() > 0 && ds2.numberCols() >= 0) r2 = new Node(ds2, false, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), r.level()+1, r);
+                if (ds2.numberLines() > 0 && ds2.numberCols() >= 0) r2 = new Node(ds2, false, n.ds().attribute(aindex), n.ds().getOptions(aindex).get(i).toString(), n.level()+1, n);
                 
                 // if the child node does not have examples
                 else {
-                    String most_common = ds.plurarityValue();
-                    r2 = new Node(ds2, ds.attribute(aindex), ds.getOptions(aindex).get(i).toString(), most_common, r.level() + 1, r);
+                    String most_common = n.ds().plurarityValue();
+                    r2 = new Node(ds2, n.ds().attribute(aindex), n.ds().getOptions(aindex).get(i).toString(), most_common, n.level() + 1, n);
                 }
-                Node subtree = fit(r2, ds2);
-                r.addChild(subtree);
+                Node subtree = fit(r2);
+                n.addChild(subtree);
                 i++;
             }
-        return r;
+        return n;
         }
     }
 
-    // function used to predict the class of an example
+    // function used to predict the class of an example using the generated decision tree
     private String predict(List<String> line) {
         List<String> for_prediction = new ArrayList<>(line);
-        Node r = root;
-        while (!r.isFinal()) {
-            for (Node r2 : r.children()) {
-                int i = r.ds().getAttributes().indexOf(r2.splitConditionAttribute());
+        Node n = root;
+        while (!n.isFinal()) {
+            for (Node r2 : n.children()) {
+                int i = n.ds().getAttributes().indexOf(r2.splitConditionAttribute());
                 if (r2.attributeValue().equals(for_prediction.get(i+1))) {
-                    if (r.isFinal()) return r.classification();
-                    r = r2;
+                    if (n.isFinal()) return n.classification();
+                    n = r2;
                     for_prediction.remove(i+1);
                     break;
                 }
             }
         }
-        return r.classification();
+        return n.classification();
     }
 
     // function used to predict the class of the examples in a new dataset, iterating through all lines
@@ -86,31 +85,31 @@ public class DecisionTree {
         s.add(root);
         boolean isRoot = true;
         while (!s.isEmpty()) {
-            Node r = s.pop();
+            Node n = s.pop();
             String space = "";
             
-            for (Node son : r.children()) {
+            for (Node son : n.children()) {
                 if (son != null) s.add(son);
             }
             if (isRoot) {isRoot = false; continue;}
 
-            space = new String(new char[r.level()-1]).replace("\0", "\t");
-            if (attributes.get(r.splitConditionAttribute()) == 0) {
+            space = new String(new char[n.level()-1]).replace("\0", "\t");
+            if (attributes.get(n.splitConditionAttribute()) == 0) {
                 System.out.println("");
-                if (!color) System.out.println(space + "<" + r.splitConditionAttribute() + ">");
-                else System.out.println(Utility.ANSI_PURPLE_BACKGROUND + space + "<" + r.splitConditionAttribute() + ">" + Utility.ANSI_RESET);
+                if (!color) System.out.println(space + "<" + n.splitConditionAttribute() + ">");
+                else System.out.println(Utility.ANSI_PURPLE_BACKGROUND + space + "<" + n.splitConditionAttribute() + ">" + Utility.ANSI_RESET);
                 System.out.println("");
-                attributes.put(r.splitConditionAttribute(), r.parent().children().size());
+                attributes.put(n.splitConditionAttribute(), n.parent().children().size());
             }
-            if (!color) System.out.print(space + "  " + r.attributeValue());
-            else System.out.print(Utility.ANSI_PURPLE + space + "  " + r.attributeValue() + Utility.ANSI_RESET);
+            if (!color) System.out.print(space + "  " + n.attributeValue());
+            else System.out.print(Utility.ANSI_PURPLE + space + "  " + n.attributeValue() + Utility.ANSI_RESET);
 
-            if (r.isFinal()) {
-                if (!color) System.out.println(": " + r.classification() + " (" + r.count() + ")");
-                else System.out.println(Utility.ANSI_PURPLE + ": " + r.classification() + " (" + r.count() + ")" + Utility.ANSI_RESET);
+            if (n.isFinal()) {
+                if (!color) System.out.println(": " + n.classification() + " (" + n.count() + ")");
+                else System.out.println(Utility.ANSI_PURPLE + ": " + n.classification() + " (" + n.count() + ")" + Utility.ANSI_RESET);
             }
             System.out.println("");
-            attributes.put(r.splitConditionAttribute(), attributes.get(r.splitConditionAttribute()) - 1);
+            attributes.put(n.splitConditionAttribute(), attributes.get(n.splitConditionAttribute()) - 1);
         }
     }
 
