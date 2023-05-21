@@ -77,6 +77,7 @@ public class Program {
             if (in.hasNextLine()) str = in.nextLine();
         }
 
+        System.out.println("");
         System.out.println(Utility.ANSI_RED + "goodbye!" + Utility.ANSI_RESET);
         in.close();
     }
