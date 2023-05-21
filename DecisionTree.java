@@ -3,15 +3,18 @@ import java.util.*;
 public class DecisionTree {
 
     Node root; // first node, root
+    int count = 0; // total number of nodes
+    int leaves = 0; // number of leaves
 
     // constructor based on a dataset
     DecisionTree(Dataset ds){
         root = new Node(ds, true, null, null, 0, null);
+        count++;
     }
 
     // function used to fill our decision tree, given a node (that will get children during the run of the function) and the respective dataset
     public Node fit(Node n) {
-        if (n.isFinal()) return n;
+        if (n.isFinal()) {leaves++; return n;}
         else {
             // get best gain value and the index of its attribute
             double avalue = -1; int aindex = 0;
@@ -38,6 +41,7 @@ public class DecisionTree {
                     String most_common = n.ds().plurarityValue();
                     r2 = new Node(ds2, n.ds().attribute(aindex), n.ds().getOptions(aindex).get(i).toString(), most_common, n.level() + 1, n);
                 }
+                count++;
                 Node subtree = fit(r2);
                 n.addChild(subtree);
                 i++;
@@ -75,6 +79,8 @@ public class DecisionTree {
 
     // prints the Decision Tree
     public void printDT(boolean color) {
+        System.out.println(count + " nodes generated in total, with " + leaves + " leaves");
+
         Map<String, Integer> attributes = new HashMap<String, Integer>();
 
         for (String att : root.ds().getAttributes()) {
